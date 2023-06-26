@@ -1,4 +1,4 @@
-# 🏖️ No-frills big brain devcontainer template
+# 🧠⚡️ No-frills big brain devcontainer template
  
 ## What is this?
 This is a barebones template that emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. Automation scripts and .bashrc files are already created if you need to use it to customize your development experience.
