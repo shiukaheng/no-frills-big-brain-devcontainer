@@ -1,7 +1,7 @@
-# No-frills big brain devcontainer template for Ubuntu 22.04 LTS
-
+# 🏖️ No-frills devcontainer template for Ubuntu 22.04 LTS
+ 
 ## What is this?
-The default devcontainer template for VS Code is too much third-party bloat. This barebones template aims to make the devcontainer as minimal as possible and emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. On top of that, it also includes some macros to make it easier to write Dockerfiles.
+This is a barebones template that emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. On top of that, it also includes some macros to make it easier to write Dockerfiles.
 
 ## Pre-requisites
 - Docker
@@ -31,3 +31,5 @@ The default devcontainer template for VS Code is too much third-party bloat. Thi
        E.g.: `UNRUN apt-get install -y curl` will remove `RUN apt-get install -y curl` from the Dockerfile and attempt to uninstall curl.
 
       Alternatively, running it without a command removes the last Dockerfile line and tries undoing package installations if the line was to install packages.
+
+Enjoy!
