@@ -34,4 +34,4 @@ On top of that, it also includes some macros to make it easier to write Dockerfi
 
       Alternatively, running it without a command removes the last Dockerfile line and tries undoing package installations if the line was to install packages.
 
-Enjoy!
+PR welcome and Enjoy!
