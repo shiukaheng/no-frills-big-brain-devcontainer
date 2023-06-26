@@ -3,6 +3,16 @@
 ## What is this?
 The default devcontainer template for VS Code is too much third-party bloat. This barebones template aims to make the devcontainer as minimal as possible and emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. On top of that, it also includes some macros to make it easier to write Dockerfiles.
 
+## Pre-requisites
+- Docker
+- VS Code
+- [VS Code Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+
+## How do I use this?
+1. Clone this repo
+2. Open the folder in VS Code
+3. Click the green button in the bottom left corner of VS Code and select "Reopen in Container"
+
 ## What's included?
 - Everything you need to configure is in the `.devcontainer` folder, inside:
   

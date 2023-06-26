@@ -98,20 +98,46 @@ function echoStylePipe() {
 # Function to emulate Dockerfile RUN command, and if it returns a code of 0, append it to the end of $DOCKERFILE
 # Otherwise, ask the user if they want to add to the Dockerfile
 
+append_line() {
+    # Arguments:
+    # $1: File
+    # $2: Line
+
+    file="$1"
+    line="$2"
+
+    # Check if file exists
+    if [ ! -f "$file" ]; then
+        echo "File $file does not exist."
+        return 1
+    fi
+
+    # Check if file ends with a newline
+    last_char=$(tail -c 1 "$file")
+    if [ "$last_char" != "" ]; then
+        # File does not end with newline. Append newline first
+        echo "" >> "$file"
+    fi
+
+    # Append line
+    echo "$line" >> "$file"
+}
+
 function RUN() {
     "$@"
     local status=$?
+    local cmd="$*"
     if [ $status -ne 0 ]; then
         echoColor "red" "The command failed with exit code $status." >&2
         echoColor "red" "Do you want to add this command to the Dockerfile? (y/n)" >&2
         read -n 1 -r
         echo >&2
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "RUN $@\n" >> $DOCKERFILE
+            append_line "$DOCKERFILE" "RUN $cmd"
         fi
     else
         echoColor "green" "The command succeeded with exit code $status. Adding to Dockerfile."
-        echo -e "RUN $@\n" >> $DOCKERFILE
+        append_line "$DOCKERFILE" "RUN $cmd"
     fi
     return $status
 }
@@ -157,25 +183,43 @@ function SUGGEST_UNINSTALL() {
     echo "$uninstall_command"
 }
 
-# Modified UNRUN function to use SUGGEST_UNINSTALL
 function UNRUN() {
-    local command="RUN $@"
-    local line_num
-    line_num=$(grep -n -F -- "$command" $DOCKERFILE | cut -d: -f1)
-    if [ -n "$line_num" ]; then
-        sed -i "${line_num}d" $DOCKERFILE
-        echoColor "green" "Command removed from Dockerfile."
-
-        local uninstall_command=$(SUGGEST_UNINSTALL "$@")
-        if [[ -n $uninstall_command ]]; then
-            echoColor "yellow" "A corresponding uninstall command was found: $uninstall_command"
-            echoColor "yellow" "Running uninstall command..."
-            $uninstall_command
+    # If no arguments are given
+    if [ $# -eq 0 ]; then
+        # Look for the last "RUN " prefixed line of the Dockerfile
+        local last_run_command=$(tac $DOCKERFILE | grep -m1 -oP '^RUN \K.*')
+        
+        # If there is a last RUN command
+        if [[ -n $last_run_command ]]; then
+            echoColor "yellow" "The last RUN command in the Dockerfile is: $last_run_command"
+            echoColor "yellow" "Do you want to UNRUN this command? (y/n)"
+            read -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                UNRUN $last_run_command
+            fi
         else
-            echoColor "green" "Please manually remove any files created by this command, or run 'docker-compose build --no-cache' to rebuild the image."
+            echoColor "red" "No RUN command found in the Dockerfile."
         fi
     else
-        echoColor "red" "Command not found in Dockerfile."
+        local command="RUN $@"
+        local line_num
+        line_num=$(grep -n -F -- "$command" $DOCKERFILE | cut -d: -f1)
+        if [ -n "$line_num" ]; then
+            sed -i "${line_num}d" $DOCKERFILE
+            echoColor "green" "Command removed from Dockerfile."
+
+            local uninstall_command=$(SUGGEST_UNINSTALL "$@")
+            if [[ -n $uninstall_command ]]; then
+                echoColor "yellow" "A corresponding uninstall command was found: $uninstall_command"
+                echoColor "yellow" "Running uninstall command..."
+                $uninstall_command
+            else
+                echoColor "green" "Please manually remove any files created by this command, or run 'docker-compose build --no-cache' to rebuild the image."
+            fi
+        else
+            echoColor "red" "Command not found in Dockerfile."
+        fi
     fi
 }
 
