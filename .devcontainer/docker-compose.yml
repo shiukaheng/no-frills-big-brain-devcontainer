@@ -5,7 +5,9 @@ services:
       dockerfile: .devcontainer/Dockerfile
     network_mode: host
     volumes:
-      - .:/root/workspace:delegated
-      - ./.devcontainer/.bashrc:/root/.bashrc
-      - ./.devcontainer/.bash_aliases:/root/.bash_aliases
+      - ..:/root/workspace:delegated
+      - ./.bashrc:/root/.bashrc
+      - ./.bash_aliases:/root/.bash_aliases
+      - ./.bash_functions:/root/.bash_functions
+
     command: sleep infinity # Keep container running for VS Code to connect
