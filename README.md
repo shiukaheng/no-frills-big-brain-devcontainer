@@ -1,4 +1,4 @@
-# No-frills devcontainer template for Ubuntu 20.04 LTS
+# No-frills big brain devcontainer template for Ubuntu 22.04 LTS
 
 ## What is this?
 The default devcontainer template for VS Code is too much third-party bloat. This barebones template aims to make the devcontainer as minimal as possible and emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. On top of that, it also includes some macros to make it easier to write Dockerfiles.
