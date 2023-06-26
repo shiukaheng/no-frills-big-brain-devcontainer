@@ -1,7 +1,9 @@
-# 🏖️ No-frills devcontainer template for Ubuntu 22.04 LTS
+# 🏖️ No-frills devcontainer template
  
 ## What is this?
-This is a barebones template that emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. On top of that, it also includes some macros to make it easier to write Dockerfiles.
+This is a barebones template that emulates the regular Docker experience as much as possible, and uses a docker-compose.yml to configure the container instead of learning how to use the devcontainer.json file. Automation scripts and .bashrc files are already created if you need to use it to customize your development experience.
+
+On top of that, it also includes some macros to make it easier to write Dockerfiles. It is based on Ubuntu 22.04, but could be easily modified from the Dockerfile.
 
 ## Pre-requisites
 - Docker
