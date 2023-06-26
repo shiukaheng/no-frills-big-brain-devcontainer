@@ -5,14 +5,19 @@ The default devcontainer template for VS Code is too much third-party bloat. Thi
 
 ## What's included?
 - Everything you need to configure is in the `.devcontainer` folder, inside:
+  
     - `devcontainer.json` - The devcontainer configuration file (see [here](https://code.visualstudio.com/docs/remote/devcontainerjson-reference) for more info
     - `Dockerfile` - The Dockerfile used to build the devcontainer
     - `docker-compose.yml` - Declaratively configure what you want to expose to the devcontainer
     - `post_create.sh` - The script that runs after the devcontainer is created
     - `post_start.sh` - The script that runs after the devcontainer is started
     - `.bashrc` - The bashrc file that is copied into the devcontainer
+    
 - Also included is some juicy macros:
-    - `RUN <command>` bash function which runs a command like it would in a regular terminal, but also adds to the Dockerfile if it succeeds:
-       e.g.: `RUN apt-get install -y curl` will install curl and add `RUN apt-get install -y curl` to the Dockerfile
-    - `UNRUN` undoes the last RUN command by removing it from the Dockerfile and attempting to uninstall packages installed (if any)
-       e.g.: `UNRUN apt-get install -y curl` will remove `RUN apt-get install -y curl` from the Dockerfile and attempt to uninstall curl
+    - `RUN <command>` bash function which runs a command like it would in a regular terminal, but also adds to the Dockerfile if it succeeds.
+       E.g.: `RUN apt-get install -y curl` will install curl and add `RUN apt-get install -y curl` to the Dockerfile
+
+    - `UNRUN` undoes any RUN command by removing it from the Dockerfile and attempting to uninstall packages installed (if any)
+       E.g.: `UNRUN apt-get install -y curl` will remove `RUN apt-get install -y curl` from the Dockerfile and attempt to uninstall curl.
+
+      Alternatively, running it without a command removes the last Dockerfile line and tries undoing package installations if the line was to install packages.
