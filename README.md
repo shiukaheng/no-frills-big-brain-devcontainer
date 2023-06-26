@@ -12,7 +12,7 @@ The default devcontainer template for VS Code is too much third-party bloat. Thi
     - `post_start.sh` - The script that runs after the devcontainer is started
     - `.bashrc` - The bashrc file that is copied into the devcontainer
 - Also included is some juicy macros:
-    - `RUN <command>` bash function which runs a command like it would in a regular terminal, but also adds to the Dockerfile if it succeeds
-       Example: `RUN apt-get install -y curl` will install curl and add `RUN apt-get install -y curl` to the Dockerfile
+    - `RUN <command>` bash function which runs a command like it would in a regular terminal, but also adds to the Dockerfile if it succeeds:
+       e.g.: `RUN apt-get install -y curl` will install curl and add `RUN apt-get install -y curl` to the Dockerfile
     - `UNRUN` undoes the last RUN command by removing it from the Dockerfile and attempting to uninstall packages installed (if any)
-       Example: `UNRUN apt-get install -y curl` will remove `RUN apt-get install -y curl` from the Dockerfile and attempt to uninstall curl
+       e.g.: `UNRUN apt-get install -y curl` will remove `RUN apt-get install -y curl` from the Dockerfile and attempt to uninstall curl
