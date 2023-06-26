@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+    network_mode: host
+    volumes:
+      - .:/root/workspace:delegated
+      - ./.devcontainer/.bashrc:/root/.bashrc
+      - ./.devcontainer/.bash_aliases:/root/.bash_aliases
+    command: sleep infinity # Keep container running for VS Code to connect
