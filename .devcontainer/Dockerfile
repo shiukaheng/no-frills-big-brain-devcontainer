@@ -1,2 +1,2 @@
 FROM ubuntu:22.04
-RUN apt update && apt install -y curl git dos2unix
+RUN apt-get update && apt-get -y install curl git dos2unix
