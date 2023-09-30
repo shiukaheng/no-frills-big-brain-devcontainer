@@ -105,10 +105,6 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-if [ -f ~/.bash_functions ]; then
-    . ~/.bash_functions
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -120,6 +116,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Devcontainer variables
-export REPOSITORY=/root/workspace
-export DOCKERFILE=/root/workspace/.devcontainer/Dockerfile
+# Add ~/bin to PATH
+export PATH=$PATH:~/bin
+
+# Source ~/.dev/.bashrc_vars if it exists
+if [ -f ~/.dev/.bashrc_vars ]; then
+    source ~/.dev/.bashrc_vars
+fi
+
+source ~/convenience.sh

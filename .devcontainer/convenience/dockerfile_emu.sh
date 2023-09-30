@@ -1,102 +1,4 @@
-# Convenience function for echoing with color
-# Usage: echoColor <color> <message>
-# Colors: black, red, green, yellow, blue, magenta, cyan, white
-function echoColor() {
-    local color=$1
-    local message=$2
-    local colorCode
-    case $color in
-        black)
-            colorCode=0
-            ;;
-        red)
-            colorCode=1
-            ;;
-        green)
-            colorCode=2
-            ;;
-        yellow)
-            colorCode=3
-            ;;
-        blue)
-            colorCode=4
-            ;;
-        magenta)
-            colorCode=5
-            ;;
-        cyan)
-            colorCode=6
-            ;;
-        white)
-            colorCode=7
-            ;;
-        *)
-            echo "Invalid color: $color"
-            return 1
-            ;;
-    esac
-    echo -e "\033[3${colorCode}m${message}\033[0m"
-}
-
-# Convenience function for piping to echoColor
-# Usage: <command> | echoColorPipe <color>
-function echoColorPipe() {
-    local color=$1
-    local message
-    while read message; do
-        echoColor $color "$message"
-    done
-}
-
-# Convenience function for adding style to text
-# Usage: echoStyle <style> <message>
-# Styles: bold, italic, underline, blink, inverse, hidden, strikethrough
-function echoStyle() {
-    local style=$1
-    local message=$2
-    local styleCode
-    case $style in
-        bold)
-            styleCode=1
-            ;;
-        italic)
-            styleCode=3
-            ;;
-        underline)
-            styleCode=4
-            ;;
-        blink)
-            styleCode=5
-            ;;
-        inverse)
-            styleCode=7
-            ;;
-        hidden)
-            styleCode=8
-            ;;
-        strikethrough)
-            styleCode=9
-            ;;
-        *)
-            echo "Invalid style: $style"
-            return 1
-            ;;
-    esac
-    echo -e "\033[${styleCode}m${message}\033[0m"
-}
-
-# Convenience function for piping to echoStyle
-# Usage: <command> | echoStylePipe <style>
-function echoStylePipe() {
-    local style=$1
-    local message
-    while read message; do
-        echoStyle $style "$message"
-    done
-}
-
-# Function to emulate Dockerfile RUN command, and if it returns a code of 0, append it to the end of $DOCKERFILE
-# Otherwise, ask the user if they want to add to the Dockerfile
+depends_func echoColor
 
 append_line() {
     # Arguments:
@@ -124,9 +26,10 @@ append_line() {
 }
 
 function RUN() {
-    "$@"
+    local cmd="$@"
+    cmd=${cmd/apt-get /\/usr\/local\/bin\/apt-get-wrapper.sh }
+    eval "$cmd"
     local status=$?
-    local cmd="$*"
     if [ $status -ne 0 ]; then
         echoColor "red" "The command failed with exit code $status." >&2
         echoColor "red" "Do you want to add this command to the Dockerfile? (y/n)" >&2
@@ -177,6 +80,9 @@ function SUGGEST_UNINSTALL() {
         uninstall_command=$(echo "$command" | sed 's/install/uninstall/')
     elif [[ $command == cargo\ install* ]]; then
         uninstall_command=$(echo "$command" | sed 's/install/uninstall/')
+    elif [[ $command == /usr/local/bin/apt-get-wrapper.sh\ install* ]]; then
+        uninstall_command=$(echo "$command" | sed 's/install/purge/')
+        uninstall_command=${uninstall_command//apt-get-wrapper.sh/apt-get}
     fi
 
     uninstall_command="${sudo_prefix}${uninstall_command}"
@@ -223,18 +129,7 @@ function UNRUN() {
     fi
 }
 
-# Autocompletion for UNRUN
-function _UNRUN() {
-    local curr_arg;
-    COMPREPLY=()
-    curr_arg=${COMP_WORDS[COMP_CWORD]}
-    local dockerfile_contents=$(grep "^RUN " $REPOSITORY/.devcontainer/Dockerfile | sed 's/^RUN //')
-
-    # Join the matched commands into a single string
-    local matches=$(compgen -W "${dockerfile_contents}" -- $curr_arg)
-    if [ -n "$matches" ]; then
-        COMPREPLY=( $(echo "${matches[*]}" | tr ' ' '\n') )
-    fi
-}
-
-complete -F _UNRUN UNRUN
+export -f append_line
+export -f RUN
+export -f SUGGEST_UNINSTALL
+export -f UNRUN

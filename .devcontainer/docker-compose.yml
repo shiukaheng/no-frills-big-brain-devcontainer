@@ -1,13 +1,24 @@
+version: '3'
 services:
   dev:
     build:
-      context: ../
-      dockerfile: .devcontainer/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     network_mode: host
+    privileged: true
     volumes:
-      - ..:/root/workspace:delegated
+      - ..:/root/workspace
       - ./.bashrc:/root/.bashrc
-      - ./.bash_aliases:/root/.bash_aliases
-      - ./.bash_functions:/root/.bash_functions
-
-    command: sleep infinity # Keep container running for VS Code to connect
+      - ./convenience.sh:/root/convenience.sh
+      - /root/.dev
+      - /root/.bash_history
+      # The following are optional for Linux hosts for better integration, and is optional
+      - '/tmp/.X11-unix:/tmp/.X11-unix:rw'
+      - '$HOME/.Xauthority:/root/.Xauthority:rw'
+      - /var/run/dbus:/var/run/dbus
+      - /root/.penv
+    environment:
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+    # Keep alive entrypoint
+    entrypoint: tail -f /dev/null
